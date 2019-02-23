@@ -24,7 +24,8 @@
 `Adafruit_CircuitPython_RPLIDAR`
 ====================================================
 
-Provide an interface to the Slamtech RPLidar that works in plain Python3 as well as CircuitPython/Blinka.
+Provide an interface to the Slamtech RPLidar that works in plain Python3
+as well as CircuitPython/Blinka.
 
 * Author(s): Dave Astels
 * Based on https://github.com/SkoltechRobotics/rplidar by Artyom Pavlov
@@ -47,10 +48,10 @@ import logging
 import sys
 import time
 import codecs
-import serial
 import struct
+import serial
 
-
+#pylint:disable=invalid-name
 __version__ = "0.0.1-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
 
@@ -164,7 +165,8 @@ class RPLidar(object):
         self._serial_port.close()
 
     def set_pwm(self, pwm):
-        assert(0 <= pwm <= MAX_MOTOR_PWM)
+        '''Set the motor PWM'''
+        assert 0 <= pwm <= MAX_MOTOR_PWM
         payload = struct.pack("<H", pwm)
         self._send_payload_cmd(SET_PWM_BYTE, payload)
 
@@ -197,13 +199,13 @@ class RPLidar(object):
             checksum ^= v
         req += struct.pack('B', checksum)
         self._serial_port.write(req)
-        self.logger.debug('Command sent: %s' % req)
+        self.logger.debug('Command sent: %s', req)
 
     def _send_cmd(self, cmd):
         '''Sends `cmd` command to the sensor'''
         req = SYNC_BYTE + cmd
         self._serial_port.write(req)
-        self.logger.debug('Command sent: %s' % req)
+        self.logger.debug('Command sent: %s', req)
 
     def _read_descriptor(self):
         '''Reads descriptor packet'''
@@ -347,7 +349,7 @@ class RPLidar(object):
             raise RPLidarException('Wrong response data type')
         while True:
             raw = self._read_response(dsize)
-            self.logger.debug('Recieved scan response: %s' % raw)
+            self.logger.debug('Recieved scan response: %s', raw)
             if max_buf_meas:
                 data_in_buf = self._serial_port.in_waiting
                 if data_in_buf > max_buf_meas*dsize:
