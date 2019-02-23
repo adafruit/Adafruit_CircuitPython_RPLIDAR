@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+
 """
 `Adafruit_CircuitPython_RPLIDAR`
 ====================================================
@@ -39,12 +40,8 @@ Implementation Notes
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
 
+Version 0.0.1 does NOT support CircutPython. Future versions will.
 """
-
-# imports
-
-__version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
 
 import logging
 import sys
@@ -52,6 +49,10 @@ import time
 import codecs
 import serial
 import struct
+
+
+__version__ = "0.0.1-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
 
 SYNC_BYTE = b'\xA5'
 SYNC_BYTE2 = b'\x5A'
