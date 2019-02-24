@@ -138,6 +138,7 @@ class RPLidar(object):
         if self.is_CP:
             _serial_port = port
         else:
+            global serial
             import serial
 
         self.connect()
