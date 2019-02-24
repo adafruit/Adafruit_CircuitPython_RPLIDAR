@@ -48,7 +48,9 @@ import sys
 import time
 import struct
 
-#pylint:disable=invalid-name
+#pylint:disable=invalid-name,undefined-name,global-variable-not-assigned
+#pylint:too-many-arguments
+
 __version__ = "0.0.1-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
 
@@ -145,10 +147,12 @@ class RPLidar(object):
         self.start_motor()
 
     def log(self, level, msg):
+        '''Output the level and a message if logging is enabled.'''
         if self.logging:
             sys.stdout.write('{0}: {1}\n'.format(level, msg))
 
     def log_bytes(self, level, msg, ba):
+        '''Log and output a byte array in a readable way.'''
         bs = ['%02x' % b for b in ba]
         self.log(level, msg + ' '.join(bs))
 
@@ -180,6 +184,7 @@ class RPLidar(object):
         self._send_payload_cmd(SET_PWM_BYTE, payload)
 
     def control_motor(self, val):
+        '''Manipular the motor'''
         if self.is_CP:
             self.motor_pin.value = val
         else:
@@ -372,9 +377,9 @@ class RPLidar(object):
                 data_in_buf = self._serial_port.in_waiting
                 if data_in_buf > max_buf_meas*dsize:
                     self.log('warning',
-                        'Too many measurments in the input buffer: %d/%d. '
-                        'Clearing buffer...' %
-                        (data_in_buf//dsize, max_buf_meas))
+                             'Too many measurments in the input buffer: %d/%d. '
+                             'Clearing buffer...' %
+                             (data_in_buf//dsize, max_buf_meas))
                     self._serial_port.read(data_in_buf//dsize*dsize)
             yield _process_scan(raw)
 
