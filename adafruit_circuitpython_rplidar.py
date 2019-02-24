@@ -50,7 +50,7 @@ import struct
 
 IS_CIRCUITPY = sys.implementation.name == 'circuitpython'
 
-if !IS_CIRCUITPY:
+if not IS_CIRCUITPY:
     import serial
     import codecs
 
@@ -113,6 +113,7 @@ class RPLidar(object):
     '''Class for communicating with RPLidar rangefinder scanners'''
 
     motor_pin = None #: DigitalInOut instance controlling the motor
+    _serial_port = None #: Serial port (or UART) instance
     port = None  #: Serial port name, e.g. /dev/ttyUSB0
     timeout = 1  #: Serial port timeout
     motor = False  #: Is motor running?
@@ -242,7 +243,7 @@ class RPLidar(object):
         if IS_CIRCUITPY:
             serialnumber = codecs.encode(raw[4:], 'hex').upper()
             serialnumber = codecs.decode(serialnumber, 'ascii')
-        else
+        else:
             serialnumber = 'unknown'
         data = {
             'model': raw[0],
@@ -392,7 +393,7 @@ class RPLidar(object):
 class CPythonRPLidar(RPLidar):
     _serial_port = None  #: serial port connection
 
-    def __init__(self, port, baudrate=115200, timeout=1, logging=False):
+    def __init__(self, motor_pin, port, baudrate=115200, timeout=1, logging=False):
         '''Initilize RPLidar object for communicating with the sensor.
         Parameters
         ----------
@@ -404,8 +405,8 @@ class CPythonRPLidar(RPLidar):
             Serial port connection timeout in seconds (the default is 1)
         logging : whether to output logging information
         '''
-        super.__init__(port, baudrate=baudrate, timeout=timeout, logging=logging)
         self._serial_port = None
+        super().__init__(None, port, baudrate=baudrate, timeout=timeout, logging=logging)
 
     def connect(self):
         '''Connects to the serial port with the name `self.port`. If it was
@@ -427,7 +428,7 @@ class CPythonRPLidar(RPLidar):
             return
         self._serial_port.close()
 
-    def control_motor(self val):
+    def control_motor(self, val):
         '''Set the motor control pin'''
         self._serial_port.dtr = not val
 
@@ -452,10 +453,10 @@ class CircuitPythonRPLidar(RPLidar):
             Serial port connection timeout in seconds (the default is 1)
         logging : whether to output logging information
         '''
-        super.__init__('', baudrate=baudrate, timeout=timeout, logging=logging)
         self._serial_port = port
         self.motor_pin = motor_pin
+        super().__init__(None, '', baudrate=baudrate, timeout=timeout, logging=logging)
 
-    def control_motor(self val):
+    def control_motor(self, val):
         '''Set the motor control pin'''
         self.motor_pin.value = val
