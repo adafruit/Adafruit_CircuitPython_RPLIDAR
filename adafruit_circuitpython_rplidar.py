@@ -133,9 +133,9 @@ class RPLidar(object):
         self.motor_running = False
         self.logging = logging
 
-        is_CP = not isinstance(port, str)
+        self.is_CP = not isinstance(port, str)
 
-        if is_CP:
+        if self.is_CP:
             _serial_port = port
         else:
             import serial
@@ -154,7 +154,7 @@ class RPLidar(object):
     def connect(self):
         '''Connects to the serial port with the name `self.port`. If it was
         connected to another serial port disconnects from it first.'''
-        if not is_CP:
+        if not self.is_CP:
             if self._serial_port is not None:
                 self.disconnect()
             try:
@@ -179,7 +179,7 @@ class RPLidar(object):
         self._send_payload_cmd(SET_PWM_BYTE, payload)
 
     def control_motor(self, val):
-        if is_CP:
+        if self.is_CP:
             self.motor_pin.value = val
         else:
             self._serial_port.dtr = not val
