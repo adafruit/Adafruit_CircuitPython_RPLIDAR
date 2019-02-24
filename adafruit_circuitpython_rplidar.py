@@ -48,12 +48,6 @@ import sys
 import time
 import struct
 
-IS_CIRCUITPY = sys.implementation.name == 'circuitpython'
-
-if not IS_CIRCUITPY:
-    import serial
-    import codecs
-
 #pylint:disable=invalid-name
 __version__ = "0.0.1-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
@@ -132,11 +126,20 @@ class RPLidar(object):
             Serial port connection timeout in seconds (the default is 1)
         logging : whether to output logging information
         '''
+        self.motor_pin = motor_pin
         self.port = port
         self.baudrate = baudrate
         self.timeout = timeout
         self.motor_running = False
         self.logging = logging
+
+        is_CP = not isinstance(port, str)
+
+        if is_CP:
+            _serial_port = port
+        else:
+            import serial
+
         self.connect()
         self.start_motor()
 
@@ -151,11 +154,23 @@ class RPLidar(object):
     def connect(self):
         '''Connects to the serial port with the name `self.port`. If it was
         connected to another serial port disconnects from it first.'''
-        pass
+        if not is_CP:
+            if self._serial_port is not None:
+                self.disconnect()
+            try:
+                self._serial_port = serial.Serial(
+                    self.port, self.baudrate,
+                    parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
+                    timeout=self.timeout, dsrdtr=True)
+            except serial.SerialException as err:
+                raise RPLidarException('Failed to connect to the sensor '
+                                       'due to: %s' % err)
 
     def disconnect(self):
         '''Disconnects from the serial port'''
-        pass
+        if self._serial_port is None:
+            return
+        self._serial_port.close()
 
     def set_pwm(self, pwm):
         '''Set the motor PWM'''
@@ -164,7 +179,10 @@ class RPLidar(object):
         self._send_payload_cmd(SET_PWM_BYTE, payload)
 
     def control_motor(self, val):
-        pass
+        if is_CP:
+            self.motor_pin.value = val
+        else:
+            self._serial_port.dtr = not val
 
     def start_motor(self):
         '''Starts sensor motor'''
@@ -240,7 +258,7 @@ class RPLidar(object):
         if dtype != INFO_TYPE:
             raise RPLidarException('Wrong response data type')
         raw = self._read_response(dsize)
-        if IS_CIRCUITPY:
+        if not IS_CIRCUITPY:
             serialnumber = codecs.encode(raw[4:], 'hex').upper()
             serialnumber = codecs.decode(serialnumber, 'ascii')
         else:
@@ -388,75 +406,3 @@ class RPLidar(object):
                 scan = []
             if quality > 0 and distance > 0:
                 scan.append((quality, angle, distance))
-
-
-class CPythonRPLidar(RPLidar):
-    _serial_port = None  #: serial port connection
-
-    def __init__(self, port, baudrate=115200, timeout=1, logging=False):
-        '''Initilize RPLidar object for communicating with the sensor.
-        Parameters
-        ----------
-        port : str
-            Serial port name to which sensor is connected
-        baudrate : int, optional
-            Baudrate for serial connection (the default is 115200)
-        timeout : float, optional
-            Serial port connection timeout in seconds (the default is 1)
-        logging : whether to output logging information
-        '''
-        self._serial_port = None
-        super().__init__(None, port, baudrate=baudrate, timeout=timeout, logging=logging)
-
-    def connect(self):
-        '''Connects to the serial port with the name `self.port`. If it was
-        connected to another serial port disconnects from it first.'''
-        if self._serial_port is not None:
-            self.disconnect()
-        try:
-            self._serial_port = serial.Serial(
-                self.port, self.baudrate,
-                parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
-                timeout=self.timeout, dsrdtr=True)
-        except serial.SerialException as err:
-            raise RPLidarException('Failed to connect to the sensor '
-                                   'due to: %s' % err)
-
-    def disconnect(self):
-        '''Disconnects from the serial port'''
-        if self._serial_port is None:
-            return
-        self._serial_port.close()
-
-    def control_motor(self, val):
-        '''Set the motor control pin'''
-        self._serial_port.dtr = not val
-
-    def clear_input(self):
-        '''Clears input buffer by reading all available data'''
-        self._serial_port.read_all()
-
-
-
-class CircuitPythonRPLidar(RPLidar):
-
-    def __init__(self, motor_pin, port, baudrate=115200, timeout=1, logging=False):
-        '''Initilize RPLidar object for communicating with the sensor.
-
-        Parameters
-        ----------
-        port : busio.UART
-            Serial port instance to which the sensor is connected
-        baudrate : int, optional
-            Baudrate for serial connection (the default is 115200)
-        timeout : float, optional
-            Serial port connection timeout in seconds (the default is 1)
-        logging : whether to output logging information
-        '''
-        self._serial_port = port
-        self.motor_pin = motor_pin
-        super().__init__(None, '', baudrate=baudrate, timeout=timeout, logging=logging)
-
-    def control_motor(self, val):
-        '''Set the motor control pin'''
-        self.motor_pin.value = val
