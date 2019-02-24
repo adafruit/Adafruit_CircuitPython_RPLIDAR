@@ -393,7 +393,7 @@ class RPLidar(object):
 class CPythonRPLidar(RPLidar):
     _serial_port = None  #: serial port connection
 
-    def __init__(self, motor_pin, port, baudrate=115200, timeout=1, logging=False):
+    def __init__(self, port, baudrate=115200, timeout=1, logging=False):
         '''Initilize RPLidar object for communicating with the sensor.
         Parameters
         ----------
