@@ -119,7 +119,7 @@ class RPLidar(object):
         '''Initilize RPLidar object for communicating with the sensor.
 
         Parameters
-        ----------
+
         port : busio.UART or str
             Serial port instance or name of the port to which the sensor is connected
         baudrate : int, optional
@@ -251,7 +251,7 @@ class RPLidar(object):
         '''Get device information
 
         Returns
-        -------
+
         dict
             Dictionary with the sensor information
         '''
@@ -283,7 +283,7 @@ class RPLidar(object):
         non-zero error code will be returned.
 
         Returns
-        -------
+
         status : str
             'Good', 'Warning' or 'Error' statuses
         error_code : int
@@ -327,13 +327,13 @@ class RPLidar(object):
         data with increaing lag.
 
         Parameters
-        ----------
+
         max_buf_meas : int
             Maximum number of measurments to be stored inside the buffer. Once
             numbe exceeds this limit buffer will be emptied out.
 
         Yields
-        ------
+
         new_scan : bool
             True if measurment belongs to a new scan
         quality : int
@@ -386,7 +386,7 @@ class RPLidar(object):
         data with increasing lag.
 
         Parameters
-        ----------
+
         max_buf_meas : int
             Maximum number of measurments to be stored inside the buffer. Once
             numbe exceeds this limit buffer will be emptied out.
@@ -394,7 +394,7 @@ class RPLidar(object):
             Minimum number of measurments in the scan for it to be yelded.
 
         Yields
-        ------
+
         scan : list
             List of the measurments. Each measurment is tuple with following
             format: (quality, angle, distance). For values description please
