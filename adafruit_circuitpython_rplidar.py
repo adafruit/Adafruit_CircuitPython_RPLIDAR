@@ -264,7 +264,8 @@ class RPLidar(object):
         if dtype != INFO_TYPE:
             raise RPLidarException('Wrong response data type')
         raw = self._read_response(dsize)
-        serialnumber = ''.join(reversed(['%02x' % b for b in struct.unpack('BBBBBBBBBBBBBBBB', raw[4:])]))
+        serialnumber_bytes = struct.unpack('BBBBBBBBBBBBBBBB', raw[4:])
+        serialnumber = ''.join(reversed(['%02x' % b for b in serialnumber_bytes]))
         data = {
             'model': raw[0],
             'firmware': (raw[2], raw[1]),
