@@ -275,7 +275,7 @@ class RPLidar(object):
         }
         return data
 
-    @proprety
+    @property
     def health(self):
         '''Get device health state. When the core system detects some
         potential risk that may cause hardware failure in the future,
