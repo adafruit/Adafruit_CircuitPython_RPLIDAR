@@ -247,7 +247,8 @@ class RPLidar(object):
             raise RPLidarException('Wrong body size')
         return data
 
-    def get_info(self):
+    @property
+    def info(self):
         '''Get device information
 
         Returns
@@ -258,7 +259,7 @@ class RPLidar(object):
         self._send_cmd(GET_INFO_BYTE)
         dsize, is_single, dtype = self._read_descriptor()
         if dsize != INFO_LEN:
-            raise RPLidarException('Wrong get_info reply length')
+            raise RPLidarException('Wrong info reply length')
         if not is_single:
             raise RPLidarException('Not a single response mode')
         if dtype != INFO_TYPE:
@@ -274,7 +275,8 @@ class RPLidar(object):
         }
         return data
 
-    def get_health(self):
+    @proprety
+    def health(self):
         '''Get device health state. When the core system detects some
         potential risk that may cause hardware failure in the future,
         the returned status value will be 'Warning'. But sensor can still work
@@ -292,7 +294,7 @@ class RPLidar(object):
         self._send_cmd(GET_HEALTH_BYTE)
         dsize, is_single, dtype = self._read_descriptor()
         if dsize != HEALTH_LEN:
-            raise RPLidarException('Wrong get_info reply length')
+            raise RPLidarException('Wrong info reply length')
         if not is_single:
             raise RPLidarException('Not a single response mode')
         if dtype != HEALTH_TYPE:
@@ -300,7 +302,7 @@ class RPLidar(object):
         raw = self._read_response(dsize)
         status = _HEALTH_STATUSES[raw[0]]
         error_code = (raw[1] << 8) + raw[2]
-        return status, error_code
+        return (status, error_code)
 
     def clear_input(self):
         '''Clears input buffer by reading all available data'''
@@ -345,13 +347,13 @@ class RPLidar(object):
             In millimeter unit. Set to 0 when measurment is invalid.
         '''
         self.start_motor()
-        status, error_code = self.get_health()
+        status, error_code = self.health
         self.log('debug', 'Health status: %s [%d]' % (status, error_code))
         if status == _HEALTH_STATUSES[2]:
             self.log('warning', 'Trying to reset sensor due to the error. '
                                 'Error code: %d' % (error_code))
             self.reset()
-            status, error_code = self.get_health()
+            status, error_code = self.health
             if status == _HEALTH_STATUSES[2]:
                 raise RPLidarException('RPLidar hardware failure. '
                                        'Error code: %d' % error_code)
@@ -362,7 +364,7 @@ class RPLidar(object):
         self._send_cmd(cmd)
         dsize, is_single, dtype = self._read_descriptor()
         if dsize != 5:
-            raise RPLidarException('Wrong get_info reply length')
+            raise RPLidarException('Wrong info reply length')
         if is_single:
             raise RPLidarException('Not a multiple response mode')
         if dtype != SCAN_TYPE:
