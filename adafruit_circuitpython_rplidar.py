@@ -48,8 +48,8 @@ import sys
 import time
 import struct
 
-#pylint:disable=invalid-name,undefined-name,global-variable-not-assigned
-#pylint:too-many-arguments
+#pylint:disable=invalid-name,undefined-variable,global-variable-not-assigned
+#pylint:disable=too-many-arguments
 
 __version__ = "0.0.1-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
@@ -264,9 +264,10 @@ class RPLidar(object):
         if dtype != INFO_TYPE:
             raise RPLidarException('Wrong response data type')
         raw = self._read_response(dsize)
-        if not IS_CIRCUITPY:
-            serialnumber = codecs.encode(raw[4:], 'hex').upper()
-            serialnumber = codecs.decode(serialnumber, 'ascii')
+        if not self.is_CP:
+            serial_number = 'unknown'
+            # serialnumber = codecs.encode(raw[4:], 'hex').upper()
+            # serialnumber = codecs.decode(serialnumber, 'ascii')
         else:
             serialnumber = 'unknown'
         data = {
