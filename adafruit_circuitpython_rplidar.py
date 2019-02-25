@@ -183,7 +183,7 @@ class RPLidar(object):
         payload = struct.pack("<H", pwm)
         self._send_payload_cmd(SET_PWM_BYTE, payload)
 
-    def control_motor(self, val):
+    def _control_motor(self, val):
         '''Manipular the motor'''
         if self.is_CP:
             self.motor_pin.value = val
@@ -194,7 +194,7 @@ class RPLidar(object):
         '''Starts sensor motor'''
         self.log('info', 'Starting motor')
         # For A1
-        self.control_motor(True)
+        self._control_motor(True)
 
         # For A2
         self.set_pwm(DEFAULT_MOTOR_PWM)
@@ -207,7 +207,7 @@ class RPLidar(object):
         self.set_pwm(0)
         time.sleep(.001)
         # For A1
-        self.control_motor(False)
+        self._control_motor(False)
         self.motor_running = False
 
     def _send_payload_cmd(self, cmd, payload):
