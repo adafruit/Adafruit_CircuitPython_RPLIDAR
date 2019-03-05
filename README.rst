@@ -50,8 +50,8 @@ Usage Example
     # used to scale data to fit on the screen
     max_distance = 0
 
-    #pylint: disable=redefined-outer-name,global-statement
     def process_data(data):
+        # Do something useful with the data
         pass
 
     scan_data = [0]*360
