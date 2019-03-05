@@ -30,6 +30,8 @@ This is easily achieved by downloading
 Usage Example
 =============
 
+.. code-block:: python
+
     import os
     from math import cos, sin, pi, floor
     import pygame
