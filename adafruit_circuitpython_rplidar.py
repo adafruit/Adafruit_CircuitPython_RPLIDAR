@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 
 """
-`Adafruit_CircuitPython_RPLIDAR`
+`adafruit_circuitpython_rplidar`
 ====================================================
 
 Provide an interface to the Slamtech RPLidar that works in plain Python3
