@@ -157,7 +157,7 @@ class RPLidar(object):
         self.log(level, msg + ' '.join(bs))
 
     def connect(self):
-        '''Connects to the serial port with the name `self.port`. If it was
+        '''Connects to the serial port named by the port instance var. If it was
         connected to another serial port disconnects from it first.'''
         if not self.is_CP:
             if self._serial_port is not None:
