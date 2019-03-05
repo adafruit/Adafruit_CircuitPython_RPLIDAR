@@ -23,14 +23,11 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
-.. todo:: Add any Learn guide links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
-
 .. toctree::
     :caption: Related Products
 
-.. todo:: Add any product links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+    Raspberry Pi 3 B+ <https://www.adafruit.com/product/3775>
+    Slamtec RPLidar <https://www.adafruit.com/product/4010>
 
 .. toctree::
     :caption: Other Links
