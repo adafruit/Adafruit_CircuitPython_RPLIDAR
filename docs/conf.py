@@ -109,7 +109,7 @@ html_static_path = ['_static']
 html_favicon = '_static/favicon.ico'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Adafruit_circuitpythonRplidarLibrarydoc'
+htmlhelp_basename = 'AdafruitRplidarLibrarydoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -135,7 +135,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Adafruit_circuitpythonRPLIDARLibrary.tex', u'Adafruit_circuitpythonRPLIDAR Library Documentation',
+    (master_doc, 'AdafruitRPLIDARLibrary.tex', u'AdafruitRPLIDAR Library Documentation',
      author, 'manual'),
 ]
 
@@ -144,7 +144,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'Adafruit_circuitpythonRPLIDARlibrary', u'Adafruit_circuitpython RPLIDAR Library Documentation',
+    (master_doc, 'AdafruitRPLIDARlibrary', u'Adafruit RPLIDAR Library Documentation',
      [author], 1)
 ]
 
@@ -154,7 +154,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Adafruit_circuitpythonRPLIDARLibrary', u'Adafruit_circuitpython RPLIDAR Library Documentation',
-     author, 'Adafruit_circuitpythonRPLIDARLibrary', 'One line description of project.',
+    (master_doc, 'AdafruitRPLIDARLibrary', u'Adafruit RPLIDAR Library Documentation',
+     author, 'AdafruitRPLIDARLibrary', 'One line description of project.',
      'Miscellaneous'),
 ]
