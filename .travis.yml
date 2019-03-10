@@ -27,7 +27,7 @@ install:
   - pip install --force-reinstall pylint==1.9.2
 
 script:
-  - pylint adafruit_circuitpython_rplidar.py
+  - pylint adafruit_rplidar.py
   - ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name,bad-whitespace examples/*.py)
   - circuitpython-build-bundles --filename_prefix adafruit_circuitpython-circuitpython-rplidar --library_location .
   - cd docs && sphinx-build -E -W -b html . _build/html && cd ..
