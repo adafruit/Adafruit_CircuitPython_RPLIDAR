@@ -1,21 +1,63 @@
-import setuptools
+"""A setuptools based setup module.
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+See:
+https://packaging.python.org/en/latest/distributing.html
+https://github.com/pypa/sampleproject
+"""
 
-setuptools.setup(
-    name="adafruit-rplidar",
-    version="0.0.1",
-    author="Dave Astels",
-    author_email="dastels@daveastels.com",
-    description="Slamtec RPLIDAR A1 interface",
+from setuptools import setup, find_packages
+# To use a consistent encoding
+from codecs import open
+from os import path
+
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
+
+setup(
+    name='adafruit-circuitpython-rplidar',
+
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
+
+    description='RPLidar support',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR",
-    py_modules=['adafruit_rplidar'],
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+    long_description_content_type='text/x-rst',
+
+    # The project's main homepage.
+    url='https://github.com/adafruit/Adafruit_CircuitPython_rplidar',
+
+    # Author details
+    author='Adafruit Industries',
+    author_email='circuitpython@adafruit.com',
+
+    install_requires=[
+        'Adafruit-Blinka'
     ],
+
+    # Choose your license
+    license='MIT',
+
+    # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Libraries',
+        'Topic :: System :: Hardware',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+    ],
+
+    # What does your project relate to?
+    keywords='adafruit blinka circuitpython micropython rplidar lidar sensors',
+
+    # You can just specify the packages manually here if your project is
+    # simple. Or you can use find_packages().
+    # TODO: IF LIBRARY FILES ARE A PACKAGE FOLDER,
+    #       CHANGE `py_modules=['...']` TO `packages=['...']`
+    py_modules=['adafruit_rplidar'],
 )

@@ -6,20 +6,32 @@
 dist: xenial
 language: python
 python:
-    - "3.6"
+  - "3.6"
 
 cache:
-    pip: true
+  pip: true
+
+env:
+  - DEPLOY_PYPI="true"
 
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: $TRAVIS_BUILD_DIR/bundles/*
-  skip_cleanup: true
-  overwrite: true
-  on:
-    tags: true
+  - provider: releases
+    api_key: "$GITHUB_TOKEN"
+    file_glob: true
+    file: "$TRAVIS_BUILD_DIR/bundles/*"
+    skip_cleanup: true
+    overwrite: true
+    on:
+      tags: true
+  # TODO: Use 'travis encrypt --com -r adafruit/<repo slug>' to generate
+  #       the encrypted password for adafruit-travis. Paste result below.
+  - provider: pypi
+    user: adafruit-travis
+    password:
+      secure: #-- PASTE ENCRYPTED PASSWORD HERE --#
+    on:
+      tags: true
+      condition: $DEPLOY_PYPI = "true"
 
 install:
   - pip install -r requirements.txt
@@ -29,5 +41,5 @@ install:
 script:
   - pylint adafruit_rplidar.py
   - ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name,bad-whitespace examples/*.py)
-  - circuitpython-build-bundles --filename_prefix adafruit_circuitpython-circuitpython-rplidar --library_location .
+  - circuitpython-build-bundles --filename_prefix adafruit-circuitpython-rplidar --library_location .
   - cd docs && sphinx-build -E -W -b html . _build/html && cd ..
