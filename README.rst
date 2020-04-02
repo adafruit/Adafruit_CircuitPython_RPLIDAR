@@ -1,7 +1,7 @@
 Introduction
 ============
 
-.. image:: https://readthedocs.org/projects/adafruit-circuitpython-circuitpython-rplidar/badge/?version=latest
+.. image:: https://readthedocs.org/projects/adafruit-circuitpython-rplidar/badge/?version=latest
     :target: https://circuitpython.readthedocs.io/projects/rplidar/en/latest/
     :alt: Documentation Status
 
@@ -9,8 +9,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://github.com/adafruit/Adafruit_circuitpython_CircuitPython_RPLIDAR/workflows/Build%20CI/badge.svg
-    :target: https://github.com/adafruit/Adafruit_circuitpython_CircuitPython_RPLIDAR
+.. image:: https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR/workflows/Build%20CI/badge.svg
+    :target: https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR
     :alt: Build Status
 
 .. Provide a convienent interface to the Slamtec RPLidar.
