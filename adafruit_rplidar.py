@@ -396,9 +396,11 @@ class RPLidar:
 
     def iter_measurments(self, max_buf_meas=500):
         """For compatibility, this method wraps `iter_measurements`"""
-        warnings.warn("The method `iter_measurments` has been renamed "
-                      "`iter_measurements` to correct spelling",
-                      PendingDeprecationWarning)
+        warnings.warn(
+            "The method `iter_measurments` has been renamed "
+            "`iter_measurements` to correct spelling",
+            PendingDeprecationWarning,
+        )
         self.iter_measurements(max_buf_meas=max_buf_meas)
 
     def iter_scans(self, max_buf_meas=500, min_len=5):
