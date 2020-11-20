@@ -41,15 +41,16 @@ Implementation Notes
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
 
-Version 0.0.1 does NOT support CircutPython. Future versions will.
+Version 0.0.1 does NOT support CircuitPython. Future versions will.
 """
 
+import struct
 import sys
 import time
-import struct
+import warnings
 
 # pylint:disable=invalid-name,undefined-variable,global-variable-not-assigned
-# pylint:disable=too-many-arguments
+# pylint:disable=too-many-arguments,raise-missing-from
 
 __version__ = "0.0.1-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
@@ -91,7 +92,7 @@ class RPLidarException(Exception):
 
 
 def _process_scan(raw):
-    """Processes input raw data and returns measurment data"""
+    """Processes input raw data and returns measurement data"""
     new_scan = bool(raw[0] & 0b1)
     inversed_new_scan = bool((raw[0] >> 1) & 0b1)
     quality = raw[0] >> 2
@@ -116,7 +117,7 @@ class RPLidar:
     baudrate = 115200  #: Baudrate for serial port
 
     def __init__(self, motor_pin, port, baudrate=115200, timeout=1, logging=False):
-        """Initilize RPLidar object for communicating with the sensor.
+        """Initialize RPLidar object for communicating with the sensor.
 
         Parameters
 
@@ -189,7 +190,7 @@ class RPLidar:
         self._send_payload_cmd(SET_PWM_BYTE, payload)
 
     def _control_motor(self, val):
-        """Manipular the motor"""
+        """Manipulate the motor"""
         if self.is_CP:
             self.motor_pin.value = val
         else:
@@ -313,9 +314,9 @@ class RPLidar:
         """Clears input buffer by reading all available data"""
 
     def stop(self):
-        """Stops scanning process, disables laser diode and the measurment
+        """Stops scanning process, disables laser diode and the measurement
         system, moves sensor to the idle state."""
-        self.log("info", "Stoping scanning")
+        self.log("info", "Stopping scanning")
         self._send_cmd(STOP_BYTE)
         time.sleep(0.001)
         self.clear_input()
@@ -323,32 +324,32 @@ class RPLidar:
     def reset(self):
         """Resets sensor core, reverting it to a similar state as it has
         just been powered up."""
-        self.log("info", "Reseting the sensor")
+        self.log("info", "Resetting the sensor")
         self._send_cmd(RESET_BYTE)
         time.sleep(0.002)
 
-    def iter_measurments(self, max_buf_meas=500):
-        """Iterate over measurments. Note that consumer must be fast enough,
+    def iter_measurements(self, max_buf_meas=500):
+        """Iterate over measurements. Note that consumer must be fast enough,
         otherwise data will be accumulated inside buffer and consumer will get
-        data with increaing lag.
+        data with increasing lag.
 
         Parameters
 
         max_buf_meas : int
-            Maximum number of measurments to be stored inside the buffer. Once
-            numbe exceeds this limit buffer will be emptied out.
+            Maximum number of measurements to be stored inside the buffer. Once
+            number exceeds this limit buffer will be emptied out.
 
         Yields
 
         new_scan : bool
-            True if measurment belongs to a new scan
+            True if measurement belongs to a new scan
         quality : int
             Reflected laser pulse strength
         angle : float
-            The measurment heading angle in degree unit [0, 360)
+            The measurement heading angle in degree unit [0, 360)
         distance : float
             Measured object distance related to the sensor's rotation center.
-            In millimeter unit. Set to 0 when measurment is invalid.
+            In millimeter unit. Set to 0 when measurement is invalid.
         """
         self.start_motor()
         status, error_code = self.health
@@ -387,11 +388,20 @@ class RPLidar:
                 if data_in_buf > max_buf_meas * dsize:
                     self.log(
                         "warning",
-                        "Too many measurments in the input buffer: %d/%d. "
+                        "Too many measurements in the input buffer: %d/%d. "
                         "Clearing buffer..." % (data_in_buf // dsize, max_buf_meas),
                     )
                     self._serial_port.read(data_in_buf // dsize * dsize)
             yield _process_scan(raw)
+
+    def iter_measurments(self, max_buf_meas=500):
+        """For compatibility, this method wraps `iter_measurements`"""
+        warnings.warn(
+            "The method `iter_measurments` has been renamed "
+            "`iter_measurements` to correct spelling",
+            PendingDeprecationWarning,
+        )
+        self.iter_measurements(max_buf_meas=max_buf_meas)
 
     def iter_scans(self, max_buf_meas=500, min_len=5):
         """Iterate over scans. Note that consumer must be fast enough,
@@ -401,20 +411,20 @@ class RPLidar:
         Parameters
 
         max_buf_meas : int
-            Maximum number of measurments to be stored inside the buffer. Once
-            numbe exceeds this limit buffer will be emptied out.
+            Maximum number of measurements to be stored inside the buffer. Once
+            number exceeds this limit buffer will be emptied out.
         min_len : int
-            Minimum number of measurments in the scan for it to be yelded.
+            Minimum number of measurements in the scan for it to be yielded.
 
         Yields
 
         scan : list
-            List of the measurments. Each measurment is tuple with following
+            List of the measurements. Each measurement is tuple with following
             format: (quality, angle, distance). For values description please
-            refer to `iter_measurments` method's documentation.
+            refer to `iter_measurements` method's documentation.
         """
         scan = []
-        iterator = self.iter_measurments(max_buf_meas)
+        iterator = self.iter_measurements(max_buf_meas)
         for new_scan, quality, angle, distance in iterator:
             if new_scan:
                 if len(scan) > min_len:

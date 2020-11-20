@@ -13,7 +13,7 @@ Introduction
     :target: https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR
     :alt: Build Status
 
-.. Provide a convienent interface to the Slamtec RPLidar.
+.. Provide a convenient interface to the Slamtec RPLidar.
 
 Dependencies
 =============
@@ -66,7 +66,7 @@ Usage Example
             process_data(scan_data)
 
     except KeyboardInterrupt:
-        print('Stoping.')
+        print('Stopping.')
     lidar.stop()
     lidar.disconnect()
 
@@ -75,7 +75,7 @@ Contributing
 ============
 
 Contributions are welcome! Please read our `Code of Conduct
-<https://github.com/adafruit/Adafruit_circuitpython_CircuitPython_RPLIDAR/blob/master/CODE_OF_CONDUCT.md>`_
+<https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR/blob/master/CODE_OF_CONDUCT.md>`_
 before contributing to help this project stay welcoming.
 
 Documentation
