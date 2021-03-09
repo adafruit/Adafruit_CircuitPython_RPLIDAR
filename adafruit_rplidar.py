@@ -24,7 +24,7 @@ Implementation Notes
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
 
-Version 0.0.2 does NOT support CircuitPython. Future versions will.
+The Current Version does NOT support CircuitPython. Future versions will.
 """
 
 import struct
