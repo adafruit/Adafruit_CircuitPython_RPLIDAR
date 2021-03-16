@@ -48,16 +48,12 @@ GET_HEALTH_BYTE = b"\x52"
 STOP_BYTE = b"\x25"
 RESET_BYTE = b"\x40"
 
-SCAN_BYTE = b"\x20"
-FORCE_SCAN_BYTE = b"\x21"
-
 DESCRIPTOR_LEN = 7
 INFO_LEN = 20
 HEALTH_LEN = 3
 
 INFO_TYPE = 4
 HEALTH_TYPE = 6
-SCAN_TYPE = 129
 
 # Constants & Command to start A2 motor
 MAX_MOTOR_PWM = 1023
@@ -183,7 +179,6 @@ class RPLidar:
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
                     timeout=self.timeout,
-                    dsrdtr=True,
                 )
             except serial.SerialException as err:
                 raise RPLidarException(
@@ -284,7 +279,7 @@ class RPLidar:
         if dtype != INFO_TYPE:
             raise RPLidarException("Wrong response data type")
         raw = self._read_response(dsize)
-        serialnumber_bytes = struct.unpack("BBBBBBBBBBBBBBBB", raw[4:])
+        serialnumber_bytes = struct.unpack("B"*len(raw[4:]), raw[4:])
         serialnumber = "".join(reversed(["%02x" % b for b in serialnumber_bytes]))
         data = {
             "model": raw[0],
