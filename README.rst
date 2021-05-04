@@ -31,6 +31,7 @@ Usage Example
 =============
 
 .. code-block:: python
+
     import os
     from math import cos, sin, pi, floor
     from adafruit_rplidar import RPLidar
