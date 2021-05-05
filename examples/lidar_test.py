@@ -1,7 +1,5 @@
-import os
-from math import cos, sin, pi, floor
+from math import floor
 from adafruit_rplidar import RPLidar
-
 
 # Setup the RPLidar
 PORT_NAME = '/dev/ttyUSB0'
