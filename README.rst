@@ -18,7 +18,7 @@ Introduction
 Dependencies
 =============
 
-Install with PyPy: `pip install Adafruit_CircuitPython_RPLIDAR`
+Install with PyPy: ``pip install Adafruit_CircuitPython_RPLIDAR``
 This driver depends on:
 
 * `Adafruit CircuitPython <https://github.com/adafruit/circuitpython>`_
