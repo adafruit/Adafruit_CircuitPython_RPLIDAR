@@ -64,6 +64,11 @@ Usage Example
     lidar.disconnect()
 
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/rplidar/en/latest/>`_.
+
 Contributing
 ============
 
