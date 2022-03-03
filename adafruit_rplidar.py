@@ -105,7 +105,9 @@ def _process_scan(raw: bytes) -> Tuple[bool, int, float, float]:
     return new_scan, quality, angle, distance
 
 
-def _process_express_scan(data: "ExpressPacket", new_angle: float, frame: int) -> Tuple[bool, None, float, float]:
+def _process_express_scan(
+    data: "ExpressPacket", new_angle: float, frame: int
+) -> Tuple[bool, None, float, float]:
     new_scan = (new_angle < data.start_angle) & (frame == 1)
     angle = (
         data.start_angle
@@ -132,7 +134,14 @@ class RPLidar:
     express_data = False
     express_old_data = None
 
-    def __init__(self, motor_pin: DigitalInOut, port: UART, baudrate: int = 115200, timeout: float = 1, logging: bool = False) -> None:
+    def __init__(
+        self,
+        motor_pin: DigitalInOut,
+        port: UART,
+        baudrate: int = 115200,
+        timeout: float = 1,
+        logging: bool = False,
+    ) -> None:
         """Initialize RPLidar object for communicating with the sensor.
 
         Parameters
@@ -224,7 +233,7 @@ class RPLidar:
         self.set_pwm(DEFAULT_MOTOR_PWM)
         self.motor_running = True
 
-    def stop_motor(self) > None:
+    def stop_motor(self) -> None:
         """Stops sensor motor"""
         self.log("info", "Stopping motor")
         # For A2
@@ -402,7 +411,9 @@ class RPLidar:
         time.sleep(0.002)
         self.clear_input()
 
-    def iter_measurements(self, max_buf_meas: int = 500, scan_type: int = SCAN_TYPE_NORMAL) -> Iterator[Tuple[bool, Optional[int], float, float]]:
+    def iter_measurements(
+        self, max_buf_meas: int = 500, scan_type: int = SCAN_TYPE_NORMAL
+    ) -> Iterator[Tuple[bool, Optional[int], float, float]]:
         """Iterate over measurements. Note that consumer must be fast enough,
         otherwise data will be accumulated inside buffer and consumer will get
         data with increasing lag.
@@ -488,7 +499,9 @@ class RPLidar:
                     self.express_frame,
                 )
 
-    def iter_measurments(self, max_buf_meas: int = 500) -> Iterator[Tuple[bool, int, float, float]]:
+    def iter_measurments(
+        self, max_buf_meas: int = 500
+    ) -> Iterator[Tuple[bool, int, float, float]]:
         """For compatibility, this method wraps `iter_measurements`"""
         warnings.warn(
             "The method `iter_measurments` has been renamed "
@@ -497,7 +510,9 @@ class RPLidar:
         )
         self.iter_measurements(max_buf_meas=max_buf_meas)
 
-    def iter_scans(self, max_buf_meas: int = 500, min_len: int = 5) -> List[int, float, float]:
+    def iter_scans(
+        self, max_buf_meas: int = 500, min_len: int = 5
+    ) -> List[int, float, float]:
         """Iterate over scans. Note that consumer must be fast enough,
         otherwise data will be accumulated inside buffer and consumer will get
         data with increasing lag.
