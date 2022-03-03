@@ -34,7 +34,7 @@ import warnings
 from collections import namedtuple
 
 try:
-    from typing import Tuple, Dict, Any, Optional, List, Iterator
+    from typing import Tuple, Dict, Any, Optional, List, Iterator, Union
     from busio import UART
     from digitalio import DigitalInOut
 except ImportError:
@@ -512,7 +512,7 @@ class RPLidar:
 
     def iter_scans(
         self, max_buf_meas: int = 500, min_len: int = 5
-    ) -> List[int, float, float]:
+    ) -> List[Union[int, float]]:
         """Iterate over scans. Note that consumer must be fast enough,
         otherwise data will be accumulated inside buffer and consumer will get
         data with increasing lag.
