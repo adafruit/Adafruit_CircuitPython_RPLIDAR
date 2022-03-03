@@ -347,8 +347,9 @@ class RPLidar:
 
     def start(self, scan_type: int = SCAN_TYPE_NORMAL) -> None:
         """Start the scanning process
+
         Parameters
-        ----------
+
         scan_type : int, optional
             Normal, force or express; default is normal
         """
