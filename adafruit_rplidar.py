@@ -43,7 +43,7 @@ except ImportError:
 # pylint:disable=invalid-name,undefined-variable,global-variable-not-assigned
 # pylint:disable=too-many-arguments,raise-missing-from,too-many-instance-attributes
 
-__version__ = "0.0.0-auto.0"
+__version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
 
 SYNC_BYTE = b"\xA5"
