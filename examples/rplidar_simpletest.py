@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 from math import floor
+
 from adafruit_rplidar import RPLidar
 
 # Setup the RPLidar
