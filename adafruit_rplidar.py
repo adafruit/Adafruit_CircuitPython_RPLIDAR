@@ -34,7 +34,8 @@ import warnings
 from collections import namedtuple
 
 try:
-    from typing import Tuple, Dict, Any, Optional, List, Iterator, Union
+    from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+
     from busio import UART
     from digitalio import DigitalInOut
 except ImportError:
@@ -46,8 +47,8 @@ except ImportError:
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_RPLIDAR.git"
 
-SYNC_BYTE = b"\xA5"
-SYNC_BYTE2 = b"\x5A"
+SYNC_BYTE = b"\xa5"
+SYNC_BYTE2 = b"\x5a"
 
 GET_INFO_BYTE = b"\x50"
 GET_HEALTH_BYTE = b"\x52"
@@ -65,7 +66,7 @@ HEALTH_TYPE = 6
 # Constants & Command to start A2 motor
 MAX_MOTOR_PWM = 1023
 DEFAULT_MOTOR_PWM = 660
-SET_PWM_BYTE = b"\xF0"
+SET_PWM_BYTE = b"\xf0"
 
 _HEALTH_STATUSES = {
     0: "Good",
@@ -169,8 +170,8 @@ class RPLidar:
         if self.is_CP:
             _serial_port = port
         else:
-            global serial  # pylint: disable=global-statement
-            import serial  # pylint: disable=import-outside-toplevel
+            global serial  # noqa: PLW0603
+            import serial  # noqa: PLC0415
 
         self.connect()
         self.start_motor()
@@ -178,7 +179,7 @@ class RPLidar:
     def log(self, level: str, msg: str) -> None:
         """Output the level and a message if logging is enabled."""
         if self.logging:
-            sys.stdout.write("{0}: {1}\n".format(level, msg))
+            sys.stdout.write(f"{level}: {msg}\n")
 
     def log_bytes(self, level: str, msg: str, ba: bytes) -> None:
         """Log and output a byte array in a readable way."""
@@ -200,9 +201,7 @@ class RPLidar:
                     timeout=self.timeout,
                 )
             except serial.SerialException as err:
-                raise RPLidarException(
-                    "Failed to connect to the sensor " "due to: %s" % err
-                )
+                raise RPLidarException("Failed to connect to the sensor " "due to: %s" % err)
 
     def disconnect(self) -> None:
         """Disconnects from the serial port"""
@@ -362,15 +361,12 @@ class RPLidar:
         if status == _HEALTH_STATUSES[2]:
             self.log(
                 "warning",
-                "Trying to reset sensor due to the error. "
-                "Error code: %d" % (error_code),
+                "Trying to reset sensor due to the error. " "Error code: %d" % (error_code),
             )
             self.reset()
             status, error_code = self.health
             if status == _HEALTH_STATUSES[2]:
-                raise RPLidarException(
-                    "RPLidar hardware failure. " "Error code: %d" % error_code
-                )
+                raise RPLidarException("RPLidar hardware failure. " "Error code: %d" % error_code)
         elif status == _HEALTH_STATUSES[1]:
             self.log(
                 "warning",
@@ -464,23 +460,17 @@ class RPLidar:
                     self.express_frame = 0
                     if not self.express_data:
                         self.log("debug", "reading first time bytes")
-                        self.express_data = ExpressPacket.from_string(
-                            self._read_response(dsize)
-                        )
+                        self.express_data = ExpressPacket.from_string(self._read_response(dsize))
 
                     self.express_old_data = self.express_data
                     self.log(
                         "debug",
-                        "set old_data with start_angle %f"
-                        % self.express_old_data.start_angle,
+                        "set old_data with start_angle %f" % self.express_old_data.start_angle,
                     )
-                    self.express_data = ExpressPacket.from_string(
-                        self._read_response(dsize)
-                    )
+                    self.express_data = ExpressPacket.from_string(self._read_response(dsize))
                     self.log(
                         "debug",
-                        "set new_data with start_angle %f"
-                        % self.express_data.start_angle,
+                        "set new_data with start_angle %f" % self.express_data.start_angle,
                     )
 
                 self.express_frame += 1
@@ -500,9 +490,7 @@ class RPLidar:
                     self.express_frame,
                 )
 
-    def iter_measurments(
-        self, max_buf_meas: int = 500
-    ) -> Iterator[Tuple[bool, int, float, float]]:
+    def iter_measurments(self, max_buf_meas: int = 500) -> Iterator[Tuple[bool, int, float, float]]:
         """For compatibility, this method wraps `iter_measurements`"""
         warnings.warn(
             "The method `iter_measurments` has been renamed "
@@ -511,9 +499,7 @@ class RPLidar:
         )
         self.iter_measurements(max_buf_meas=max_buf_meas)
 
-    def iter_scans(
-        self, max_buf_meas: int = 500, min_len: int = 5
-    ) -> List[Union[int, float]]:
+    def iter_scans(self, max_buf_meas: int = 500, min_len: int = 5) -> List[Union[int, float]]:
         """Iterate over scans. Note that consumer must be fast enough,
         otherwise data will be accumulated inside buffer and consumer will get
         data with increasing lag.
@@ -559,13 +545,13 @@ class ExpressPacket(express_packet):
         packet = bytearray(data)
 
         if (packet[0] >> 4) != cls.sync1 or (packet[1] >> 4) != cls.sync2:
-            raise ValueError("try to parse corrupted data ({})".format(packet))
+            raise ValueError(f"try to parse corrupted data ({packet})")
 
         checksum = 0
         for b in packet[2:]:
             checksum ^= b
         if checksum != (packet[0] & 0b00001111) + ((packet[1] & 0b00001111) << 4):
-            raise ValueError("Invalid checksum ({})".format(packet))
+            raise ValueError(f"Invalid checksum ({packet})")
 
         new_scan = packet[3] >> 7
         start_angle = (packet[2] + ((packet[3] & 0b01111111) << 8)) / 64
