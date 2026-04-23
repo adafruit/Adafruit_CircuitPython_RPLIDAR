@@ -183,7 +183,7 @@ class RPLidar:
 
     def log_bytes(self, level: str, msg: str, ba: bytes) -> None:
         """Log and output a byte array in a readable way."""
-        bs = ["%02x" % b for b in ba]
+        bs = [f"{b:02x}" for b in ba]
         self.log(level, msg + " ".join(bs))
 
     def connect(self) -> None:
@@ -201,7 +201,7 @@ class RPLidar:
                     timeout=self.timeout,
                 )
             except serial.SerialException as err:
-                raise RPLidarException("Failed to connect to the sensor " "due to: %s" % err)
+                raise RPLidarException(f"Failed to connect to the sensor due to: {err}")
 
     def disconnect(self) -> None:
         """Disconnects from the serial port"""
@@ -272,7 +272,7 @@ class RPLidar:
 
     def _read_response(self, dsize: int) -> bytes:
         """Reads response packet with length of `dsize` bytes"""
-        self.log("debug", "Trying to read response: %d bytes" % dsize)
+        self.log("debug", f"Trying to read response: {dsize:d} bytes")
         data = self._serial_port.read(dsize)
         self.log_bytes("debug", "Received data:", data)
         if len(data) != dsize:
@@ -298,7 +298,7 @@ class RPLidar:
             raise RPLidarException("Wrong response data type")
         raw = self._read_response(dsize)
         serialnumber_bytes = struct.unpack("B" * len(raw[4:]), raw[4:])
-        serialnumber = "".join(reversed(["%02x" % b for b in serialnumber_bytes]))
+        serialnumber = "".join(reversed([f"{b:02x}" for b in serialnumber_bytes]))
         data = {
             "model": raw[0],
             "firmware": (raw[2], raw[1]),
@@ -357,23 +357,23 @@ class RPLidar:
         # Start the scanning process, enable laser diode and the
         # measurement system
         status, error_code = self.health
-        self.log("debug", "Health status: %s [%d]" % (status, error_code))
+        self.log("debug", f"Health status: {status} [{error_code:d}]")
         if status == _HEALTH_STATUSES[2]:
             self.log(
                 "warning",
-                "Trying to reset sensor due to the error. " "Error code: %d" % (error_code),
+                f"Trying to reset sensor due to the error. Error code: {error_code:d}",
             )
             self.reset()
             status, error_code = self.health
             if status == _HEALTH_STATUSES[2]:
-                raise RPLidarException("RPLidar hardware failure. " "Error code: %d" % error_code)
+                raise RPLidarException(f"RPLidar hardware failure. Error code: {error_code:d}")
         elif status == _HEALTH_STATUSES[1]:
             self.log(
                 "warning",
-                "Warning sensor status detected! " "Error code: %d" % (error_code),
+                f"Warning sensor status detected! Error code: {error_code:d}",
             )
         cmd = _SCAN_TYPES[scan_type]["byte"]
-        self.log("info", "starting scan process in %s mode" % scan_type)
+        self.log("info", f"starting scan process in {scan_type} mode")
 
         if scan_type == "express":
             self._send_payload_cmd(cmd, b"\x00\x00\x00\x00\x00")
@@ -447,8 +447,8 @@ class RPLidar:
                 if data_in_buf > max_buf_meas * dsize:
                     self.log(
                         "warning",
-                        "Too many measurements in the input buffer: %d/%d. "
-                        "Clearing buffer..." % (data_in_buf // dsize, max_buf_meas),
+                        f"Too many measurements in the input buffer: "
+                        + f"{data_in_buf // dsize:d}/{max_buf_meas:d}. Clearing buffer...",
                     )
                     self._serial_port.read(data_in_buf // dsize * dsize)
             if self.scan_type == SCAN_TYPE_NORMAL:
@@ -465,24 +465,20 @@ class RPLidar:
                     self.express_old_data = self.express_data
                     self.log(
                         "debug",
-                        "set old_data with start_angle %f" % self.express_old_data.start_angle,
+                        f"set old_data with start_angle {self.express_old_data.start_angle:f}",
                     )
                     self.express_data = ExpressPacket.from_string(self._read_response(dsize))
                     self.log(
                         "debug",
-                        "set new_data with start_angle %f" % self.express_data.start_angle,
+                        f"set new_data with start_angle {self.express_data.start_angle:f}",
                     )
 
                 self.express_frame += 1
                 self.log(
                     "debug",
-                    "process scan of frame %d with angle : "
-                    "%f and angle new : %f"
-                    % (
-                        self.express_frame,
-                        self.express_old_data.start_angle,
-                        self.express_data.start_angle,
-                    ),
+                    f"process scan of frame {self.express_frame:d} with angle : "
+                    + f"{self.express_old_data.start_angle:f}"
+                    + f" and angle new : {self.express_data.start_angle:f}",
                 )
                 yield _process_express_scan(
                     self.express_old_data,
